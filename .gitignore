@@ -1,0 +1,6 @@
+/ref_paper/
+/pkgs/
+/test/
+/data/*.png
+/data/Geometry
+/data/2D_struct
