@@ -1,4 +1,4 @@
-Molecules,SMILES,Adsorption energy
+Molecules,SMILES,Ads.E
 mol1,NC(CC1=CC(O)=C(O)C=C1)C(O)=O,16.51
 mol2,CC(N)(CC1=CC(O)=C(O)C=C1)C(O)=O,23.1
 mol3,NC(C(O)C1=CC(O)=C(O)C=C1)C(O)=O,24.01
