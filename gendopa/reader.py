@@ -1,6 +1,7 @@
 import os
+from tqdm import tqdm
 import pandas as pd
-from typing import List
+from typing import List, Optional
 
 from gendopa.molinfo import AdsMolData
 
@@ -22,12 +23,36 @@ class MolDataReader:
         dataset = pd.read_csv(self.data_fpath)
         return dataset
     
-    def read(self) -> List[AdsMolData]:       
+    def read(self,
+             properties: Optional[List[str]] = None,
+             show_progress: bool = True) -> List[AdsMolData]:       
 
-        AdsMolDataset = list()
-        for i, smiles in enumerate(self.dataset['SMILES']):
-            ads_mol = AdsMolData(SMILES=smiles, name=f'mol{i+1}')
+        
+        if properties == None:
+            properties = ['Ads.E']
+
+        # validate the CSV columns name
+        for prop in properties:
+            if prop not in self.dataset.columns:
+                raise KeyError(f"Property '{prop}' not found in dataset columns: {list(self.dataset.columns)}")
+
+        if 'SMILES' not in self.dataset.columns:
+            raise KeyError("Dataset must contain a 'SMILES' column.")
+        
+        # set the tqdm iterator
+        iterator = tqdm(self.dataset.iterrows(),
+                        total=len(self.dataset),
+                        desc="Read Molecules",
+                        disable=not show_progress)
+        
+        AdsMolDataset: List[AdsMolData] = []
+        
+        for i, row in iterator:
+            smiles = row['SMILES']
+            prop_dict = {prop: row[prop] for prop in properties}
+            ads_mol = AdsMolData(SMILES=smiles, name=f'mol{i+1}', properties=prop_dict)
             AdsMolDataset.append(ads_mol)
+        
         
         return AdsMolDataset
 
