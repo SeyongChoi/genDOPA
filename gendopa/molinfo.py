@@ -3,16 +3,10 @@ This module provides classes and functions to handle molecular data.
 """
 
 from rdkit import Chem
-from rdkit.Chem import AllChem, Draw
+from rdkit.Chem import Draw
 
 import selfies as sf
-from group_selfies import (
-    fragment_mols, 
-    Group, 
-    MolecularGraph, 
-    GroupGrammar, 
-    group_encoder
-)
+from group_selfies import Group, GroupGrammar
 from dataclasses import dataclass, field
 from typing import Optional, Dict, List
 
