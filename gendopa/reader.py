@@ -59,7 +59,8 @@ class MolDataReader:
     
     def read(self,
              properties: Optional[List[str]] = None,
-             show_progress: bool = True) -> List[AdsMolData]:       
+             show_progress: bool = True,
+             save_result: Optional[bool] = False) -> List[AdsMolData]:       
 
         if properties == None:
             properties = ['Ads.E']
@@ -97,7 +98,8 @@ class MolDataReader:
             
             AdsMolDataset.append(ads_mol)
         
-        
+        if save_result:
+            self.dataset.to_csv('./dataset.csv', index=False)
         return AdsMolDataset
 
 if __name__=="__main__":
@@ -109,7 +111,7 @@ if __name__=="__main__":
 
     print(reader.dataset.head())
 
-    AdsMolDataset = reader.read()
+    AdsMolDataset = reader.read(save_result=True)
     
     print(reader.dataset.head())
         
