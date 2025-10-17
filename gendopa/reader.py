@@ -1,8 +1,9 @@
 import os
 from tqdm import tqdm
 import pandas as pd
-from typing import List, Optional
+from typing import List, Optional, Literal
 
+import selfies as sf
 from group_selfies import Group, GroupGrammar
 from gendopa.molinfo import AdsMolData
 from rdkit import RDLogger
@@ -57,6 +58,7 @@ class MolDataReader:
 
         self.grammar = GroupGrammar(self.Groups)
     
+    
     def read(self,
              properties: Optional[List[str]] = None,
              show_progress: bool = True,
@@ -101,8 +103,62 @@ class MolDataReader:
         if save_result:
             self.dataset.to_csv('./dataset.csv', index=False)
         return AdsMolDataset
+    
+def encoding(dataset: Optional[List[AdsMolData]] = None,
+             dataframe: Optional[pd.DataFrame] = None,
+             represent: Literal['gsf', 'selfies', 'smiles'] = 'gsf',
+) -> List[str]:
+    # mapping attribute/columns
+    rep2attr = {
+        'gsf':     ('GroupSELFIES', 'GroupSELFIES'),
+        'selfies': ('SELFIES',      'SELFIES'),
+        'smiles':  ('SMILES',       'SMILES'),
+    }
+    if represent not in rep2attr:
+        raise ValueError(f"represent must be one of {list(rep2attr.keys())}, got: {represent}")
+    
+    ds_attr, df_col = rep2attr[represent]
+
+    # only Dataset
+    if dataset is not None and dataframe is None:
+        missing = [i for i,m in enumerate(dataset) if not hasattr(m, ds_attr)]
+        if missing:
+            raise AttributeError(f"Some AdsMolData items are missing attribute '{ds_attr}': indices {missing[:5]}...")
+        repr_set = [getattr(ads_mol, ds_attr) for ads_mol in dataset]
+    # only DataFrame
+    elif dataset is None and dataframe is not None:
+        if df_col not in dataframe.columns:
+            raise KeyError(f"DataFrame must contain column '{df_col}'. Have: {list(dataframe.columns)}")
+        repr_set = dataframe[df_col].astype(str).tolist()
+
+    # both Dataset/DataFrame
+    elif dataset is not None and dataframe is not None:
+        missing = [i for i,m in enumerate(dataset) if not hasattr(m, ds_attr)]
+        if missing:
+            raise AttributeError(f"Some AdsMolData items are missing attribute '{ds_attr}': indices {missing[:5]}...")
+        ds_list = [getattr(ads_mol, ds_attr) for ads_mol in dataset]
+
+        if df_col not in dataframe.columns:
+            raise KeyError(f"DataFrame must contain column '{df_col}'. Have: {list(dataframe.columns)}")
+        df_list = dataframe[df_col].astype(str).tolist()
+        
+        if len(ds_list) != len(df_list):
+            raise ValueError(f"Size mismatch between dataset({len(ds_list)}) and dataframe({len(df_list)}).")
+
+        if ds_list != df_list:
+            raise ValueError("Content mismatch between dataset and dataframe.")
+
+        repr_set = ds_list
+    # neither Dataset/DataFrame
+    else:
+        raise ValueError("Either 'dataset' or 'dataframe' must be provided.")
+
+    return repr_set
+            
+    
 
 if __name__=="__main__":
+
 
     data_root_dir = 'D:\\genDOPA\\data\\'
     data_fpath = os.path.join(data_root_dir, "adsorption_property.csv")
@@ -111,8 +167,14 @@ if __name__=="__main__":
 
     print(reader.dataset.head())
 
-    AdsMolDataset = reader.read(save_result=True)
+    AdsMolDataset = reader.read(save_result=False)
     
     print(reader.dataset.head())
+    repr_set = encoding(dataset=AdsMolDataset, represent='gsf')
+    gsf_set = [ads_mol.GroupSELFIES for ads_mol in AdsMolDataset]
+    alphabet = sf.get_alphabet_from_selfies(repr_set)
+    alphabet.add("[nop]")
+    alphabet = list(sorted(alphabet))
+    print(alphabet)
         
 
