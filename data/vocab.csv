@@ -1,7 +1,7 @@
 Fragment,SMILES,group_SMILES,all_attachment,chemical exp.,
 Catechol,C1=C(O)C(O)=CC=C1,C1=CC(O(*1))=C(O(*1))C=C1,TRUE,,
 amino,N,N(*1)(*1),TRUE,-NH2,
-carboxyl,C(O)=O,C(*1)(O)=O,TRUE,-COOH,
+carboxyl,C(O)=O,*1C(=O)O,FALSE,-COOH,
 methyl,C,C(*3),TRUE,-CH3,
 hydroxly,O,O(*1),TRUE,-OH,
 acetyl ,C(=O)C,C(=O)C(*1)(*1)(*1),TRUE,-COCH3,
