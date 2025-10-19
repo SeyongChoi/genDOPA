@@ -81,7 +81,7 @@ class MolDataReader:
                         desc="Read Molecules",
                         disable=not show_progress)
         
-        AdsMolDataset: List[AdsMolData] = []
+        MolDataset: List[AdsMolData] = []
 
         for i, row in iterator:
             # load the info.
@@ -98,11 +98,11 @@ class MolDataReader:
                 ads_mol.GroupSELFIES = encoded
                 self.dataset.loc[i, 'GroupSELFIES'] = encoded
             
-            AdsMolDataset.append(ads_mol)
+            MolDataset.append(ads_mol)
         
         if save_result:
             self.dataset.to_csv('./dataset.csv', index=False)
-        return AdsMolDataset
+        return MolDataset
     
 
 if __name__=="__main__":
