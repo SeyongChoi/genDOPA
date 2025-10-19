@@ -23,6 +23,9 @@ class Encoder:
             self.vocab_stoi = {s:i for i,s in enumerate(self.alphabet)}
             self.vocab_itos = {i:s for i,s in enumerate(self.alphabet)}
 
+    def _wrap_bos_eos(self, repr: str) -> str:
+        return "[bos]" + repr + "[eos]"
+
     def _generate_repr_set(self) -> List[str]:
         # mapping attribute/columns
         rep2attr = {
@@ -69,15 +72,18 @@ class Encoder:
         else:
             raise ValueError("Either 'dataset' or 'dataframe' must be provided.")
         
+        repr_set = [self._wrap_bos_eos(repr) for repr in repr_set]
         return repr_set
 
     def _generate_alphabet(self) -> List[str]:    
         alphabet = sf.get_alphabet_from_selfies(self.repr_set)
         alphabet.discard("[nop]")
+        alphabet.discard("[eos]")
+        alphabet.discard("[bos]")
         others = sorted(alphabet)
 
 
-        return ["[nop]"] + others
+        return ["[nop]", "[bos]", "[eos]"] + others
 
     def repr_to_encoding(self,
                           repr: str,
@@ -159,6 +165,7 @@ if __name__ == "__main__":
     print(labels[:2])
     one_hots = encoder.encoding(enc_type='one_hot')
     print(one_hots[:2])
+    print(encoder.repr_set[:2])
     print(encoder.repr_to_encoding(MolDataset[0].GroupSELFIES,
                                    encoder.vocab_stoi,
                                    encoder.max_len,
