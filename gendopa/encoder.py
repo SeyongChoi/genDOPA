@@ -79,7 +79,7 @@ class Encoder:
 
         return ["[nop]"] + others
 
-    def _repr_to_encoding(self,
+    def repr_to_encoding(self,
                           repr: str,
                           vocab_stoi: dict,
                           pad_to_len: int,
@@ -116,7 +116,7 @@ class Encoder:
         encoding_one_hots = []
         if enc_type == 'label':
             for repr in self.repr_set:
-                encoding = self._repr_to_encoding(repr=repr,
+                encoding = self.repr_to_encoding(repr=repr,
                                                  vocab_stoi=self.vocab_stoi,
                                                  pad_to_len=self.max_len,
                                                  enc_type=enc_type)
@@ -124,7 +124,7 @@ class Encoder:
             return encoding_labels
         elif enc_type == 'one_hot':
             for repr in self.repr_set:
-                encoding = self._repr_to_encoding(repr=repr,
+                encoding = self.repr_to_encoding(repr=repr,
                                                  vocab_stoi=self.vocab_stoi,
                                                  pad_to_len=self.max_len,
                                                  enc_type=enc_type)
@@ -132,7 +132,7 @@ class Encoder:
             return encoding_one_hots
         else:  # both
             for repr in self.repr_set:
-                label, one_hot = self._repr_to_encoding(repr=repr,
+                label, one_hot = self.repr_to_encoding(repr=repr,
                                                        vocab_stoi=self.vocab_stoi,
                                                        pad_to_len=self.max_len,
                                                        enc_type=enc_type)
@@ -151,11 +151,15 @@ if __name__ == "__main__":
 
     print(reader.dataset.head())
 
-    AdsMolDataset = reader.read(save_result=False)
+    MolDataset = reader.read(save_result=False)
 
-    encoder = Encoder(dataset=AdsMolDataset, represent='gsf')
+    encoder = Encoder(dataset=MolDataset, represent='gsf')
     print(encoder.alphabet)
     labels = encoder.encoding(enc_type='label')
     print(labels[:2])
     one_hots = encoder.encoding(enc_type='one_hot')
     print(one_hots[:2])
+    print(encoder.repr_to_encoding(MolDataset[0].GroupSELFIES,
+                                   encoder.vocab_stoi,
+                                   encoder.max_len,
+                                   enc_type='both'))
