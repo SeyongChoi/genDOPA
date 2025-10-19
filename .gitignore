@@ -5,3 +5,5 @@
 /data/Geometry
 /data/2D_struct
 *.pyc
+__pycache__/
+lightning_logs/
