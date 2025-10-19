@@ -73,10 +73,11 @@ class Encoder:
 
     def _generate_alphabet(self) -> List[str]:    
         alphabet = sf.get_alphabet_from_selfies(self.repr_set)
-        alphabet.add("[nop]")
-        alphabet = list(sorted(alphabet))
+        alphabet.discard("[nop]")
+        others = sorted(alphabet)
 
-        return alphabet
+
+        return ["[nop]"] + others
 
     def _repr_to_encoding(self,
                           repr: str,
