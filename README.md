@@ -21,8 +21,8 @@ Molecular data are represented with (Group)SELFIES or SMILES, and the model lear
 ## Usage
 
 ```bash
-git clone https://github.com/SeyongChoi/genDOPA_toy.git
-cd genDOPA_toy
+git clone https://github.com/SeyongChoi/genAds_toy.git
+cd genAds_toy
 pip install -r requirements.txt
 
 # Train model
