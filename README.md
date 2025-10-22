@@ -6,6 +6,8 @@ Generative model for designing catechol-based adhesive molecules using Variation
 `genDOPA` implements VAE and conditional VAE (cVAE) models to generate catechol-derived adhesive molecules with improved adsorption energy on graphite.  
 Molecular data are represented with (group)SELFIES or SMILES, and the model learns latent representations that capture chemical and physical features.
 
+**Status:** *In progress* — currently building data pipeline, neural network module, and training configuration.
+
 ## Usage
 
 ```bash
