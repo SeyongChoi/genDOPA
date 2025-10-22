@@ -1,16 +1,12 @@
-# 🧬 genDOPA
+# genDOPA
 
 Generative model for designing catechol-based adhesive molecules using Variational Autoencoder (VAE).
 
----
-
-## 🧠 Overview
+## Overview
 `genDOPA` implements VAE and conditional VAE (cVAE) models to generate catechol-derived adhesive molecules with improved adsorption energy on graphite.  
 Molecular data are represented with (group)SELFIES or SMILES, and the model learns latent representations that capture chemical and physical features.
 
----
-
-## 🚀 Usage
+## Usage
 
 ```bash
 git clone https://github.com/SeyongChoi/genDOPA_toy.git
